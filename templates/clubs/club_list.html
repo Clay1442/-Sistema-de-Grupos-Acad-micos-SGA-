@@ -1,0 +1,71 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clubes</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .club-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+        }
+
+        .club-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 16px;
+        }
+
+        .club-info h2 {
+            margin-top: 0;
+        }
+
+        .empty {
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Clubes e Grupos de Extensão</h1>
+    <hr>
+
+    {% for club in clubs %}
+    <div class="club-card">
+        
+        {% if club.logo %}
+        <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}" class="club-logo">
+        {% else %}
+        <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo">
+        {% endif %}
+    
+        <div class="club-info">
+            <h2>{{ club.name }}</h2>
+            <p>{{ club.description|truncatewords:30 }}</p>
+        </div>
+    </div>
+
+    {% empty %}
+    <p class="empty">Ainda não há clubes cadastrados.</p>
+    <p>Tente adicionar alguns pelo <a href="/admin/">Painel de Administração</a>!</p>
+    {% endfor %}
+
+</body>
+
+</html>
