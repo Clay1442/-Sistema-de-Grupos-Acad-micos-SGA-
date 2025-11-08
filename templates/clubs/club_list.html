@@ -29,7 +29,11 @@
                 <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo">
             {% endif %} 
             <div class="club-info">
-                <h2>{{ club.name }}</h2>
+            <h2>
+                <a href="{% url 'club-detail' pk=club.pk %}" style="text-decoration: none; color: #333;">
+                    {{ club.name }}
+                </a>
+            </h2>
                 <p>{{ club.description|truncatewords:30 }}</p> 
             </div>
         </div>
@@ -47,7 +51,11 @@
                 <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo">
             {% endif %} 
             <div class="club-info">
-                <h2>{{ club.name }}</h2>
+                <h2>
+                <a href="{% url 'club-detail' pk=club.pk %}" style="text-decoration: none; color: #333;">
+                        {{ club.name }}
+                        </a>
+                    </h2>
                 <p>{{ club.description|truncatewords:30 }}</p> 
                 </div>
         </div>

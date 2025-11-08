@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ club.name }}</title>
+    
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; }
+        .header { display: flex; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        .club-logo-large { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; margin-right: 20px; }
+        .header h1 { margin: 0; }
+        .header p { margin: 5px 0 0 0; color: #555; }
+        .section { margin-top: 30px; }
+        .section h2 { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .list-item { border: 1px solid #eee; border-radius: 5px; padding: 10px 15px; margin-bottom: 10px; }
+        .list-item h3 { margin: 0 0 5px 0; }
+        .list-item p { margin: 0; font-size: 0.9em; color: #333; }
+        .empty { color: #888; }
+        .back-link { display: inline-block; margin-top: 20px; text-decoration: none; background: #eee; padding: 10px 15px; border-radius: 5px; color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        {% if club.logo %}
+            <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}" class="club-logo-large">
+        {% else %}
+            <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo-large">
+        {% endif %}
+        <div>
+            <h1>{{ club.name }}</h1>
+            <p>Responsável (criador): <strong>{{ club.advisor.get_full_name|default:club.advisor.username }}</strong></p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Descrição</h2>
+        <p>{{ club.description|linebreaksbr }}</p> </div>
+
+    <div class="section">
+        <h2>Membros</h2>
+        {% for membro in members %}
+            <div class="list-item">
+                <h3>{{ membro.user.get_full_name|default:membro.user.username }}</h3>
+                <p><strong>Cargo:</strong> {{ membro.position }}</p>
+                <p>Membro desde: {{ membro.input_date }}</p>
+            </div>
+        {% empty %}
+            <p class="empty">Este clube ainda não possui membros cadastrados (além do Conselheiro).</p>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Projetos Ativos</h2>
+        {% for projeto in projects %}
+            <div class="list-item">
+                <h3>{{ projeto.title }}</h3>
+                <p><strong>Status:</strong> {{ projeto.get_status_display }}</p>
+                <p>Início: {{ projeto.start_date }}</p>
+            </div>
+        {% empty %}
+            <p class="empty">Nenhum projeto em andamento no momento.</p>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Próximos Eventos</h2>
+        {% for evento in events %}
+            <div class="list-item">
+                <h3>{{ evento.title }}</h3>
+                <p><strong>Quando:</strong> {{ evento.event_date }}</sTrong>
+                <p><strong>Onde:</strong> {{ evento.location }}</p>
+            </div>
+        {% empty %}
+            <p class="empty">Nenhum evento agendado no momento.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'club-list' %}" class="back-link">← Voltar para Meus Clubes</a>
+
+</body>
+</html>
