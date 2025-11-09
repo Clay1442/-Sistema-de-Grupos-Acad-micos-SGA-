@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Novo Clube</title>
+    
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; }
+        form { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        form p { display: grid; grid-template-columns: 150px 1fr; gap: 10px; margin-bottom: 15px; }
+        form label { font-weight: bold; }
+        form input, form textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { background: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .back-link { display: inline-block; margin-top: 20px; text-decoration: none; background: #eee; padding: 10px 15px; border-radius: 5px; color: #333; }
+    </style>
+</head>
+<body>
+
+    <h1>Criar Novo Clube</h1>
+    <p>Preencha os dados abaixo para criar seu novo clube. Você será definido como o Conselheiro (Advisor) automaticamente.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="submit-btn">Salvar e Criar Clube</button>
+    </form>
+
+    <a href="{% url 'club-list' %}" class="back-link">← Voltar</a>
+
+</body>
+</html>
