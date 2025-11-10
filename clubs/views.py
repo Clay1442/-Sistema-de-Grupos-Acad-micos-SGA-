@@ -100,3 +100,30 @@ def delete_member(request, pk, membership_id):
         return redirect('club-detail', pk=club.pk)
 
     return redirect('club-detail', pk=club.pk)    
+
+
+@login_required
+def club_edit(request, pk):
+    club = get_object_or_404(Club, pk=pk)
+    if request.user != club.advisor:
+        messages.error(request, 'ERRO: Você não tem permissão para editar este clube.')
+        return redirect('club-detail', pk=club.pk)
+    
+    if request.method == 'POST':
+        form = ClubForm(request.POST, request.FILES, instance=club)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Informações do clube atualizadas com sucesso!')
+            return redirect('club-detail', pk=club.pk)
+        
+    else:
+        form = ClubForm(instance=club)
+
+    context = {
+        'form': form,
+        'club': club,
+    }
+
+    return render(request, 'clubs/club_edit.html', context)
+

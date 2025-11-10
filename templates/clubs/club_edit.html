@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editando: {{ club.name }}</title>
+
+    <style>
+        /* ... (todos os seus estilos anteriores como 'body', 'form p', etc. ficam aqui) ... */
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        form {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        form p {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        form label {
+            font-weight: bold;
+        }
+
+        form input,
+        form textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background: #eee;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .logo-widget>a {
+            display: none;
+        }
+
+        .logo-widget {
+            font-size: 0;
+        }
+
+        .logo-widget label,
+        .logo-widget input {
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Editando Clube: {{ club.name }}</h1>
+
+    <form method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <p>
+            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label>
+            {{ form.name }}
+        </p>
+        <p>
+            <label for="{{ form.description.id_for_label }}">{{ form.description.label }}:</label>
+            {{ form.description }}
+        </p>
+
+        <div style="margin-bottom: 20px;">
+            {% if club.logo %}
+            <p style="margin: 0 0 10px 0; font-weight: bold;">Imagem Atual:</p>
+            <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}"
+                style="max-height: 150px; border-radius: 5px; margin-bottom: 15px; display: block;">
+            {% endif %}
+
+            <div class="logo-widget">
+                {{ form.logo }}
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Salvar Alterações</button>
+    </form>
+
+    <a href="{% url 'club-detail' pk=club.pk %}" class="back-link">← Cancelar e Voltar</a>
+
+</body>
+
+</html>
