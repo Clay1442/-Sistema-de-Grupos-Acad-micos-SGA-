@@ -56,7 +56,6 @@ class Project(models.Model):
 
     STATUS_CHOICES = (
         ('concluido', 'Concluido'),
-        ('finalizado', 'Finalizado'),
         ('em andamento', 'Em andamento'),
         )
 

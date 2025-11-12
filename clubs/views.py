@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import User
 from .models import Club, Membership, Project, Event
-from .forms import ClubForm, EventForm
+from .forms import ClubForm, EventForm, ProjectForm
 
 
 # Create your views here.
@@ -174,7 +174,32 @@ def add_event(request, pk):
 
     return render(request, 'clubs/add_event.html', context)        
 
+login_required
+def project_create(request, pk):
+    club = get_object_or_404(Club, pk=pk)
 
+    if request.user != club.advisor:
+        messages.error(request, 'ERRO: Você não tem permissão para adicionar projetos a este clube.')
+        return redirect('club-detail', pk=club.pk)
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)            
+            project.club = club
+            project.save()
+            messages.success(request, 'Novo projeto criado com sucesso!')
+            
+            return redirect('club-detail', pk=club.pk)
+
+    else:
+        form = ProjectForm()
+
+    context = {
+        'form': form,
+        'club': club,
+    }
+    return render(request, 'clubs/project_create.html', context)
 
 
     

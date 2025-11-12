@@ -1,5 +1,5 @@
 from django import forms
-from .models import Club, Event
+from .models import Club, Event, Project
 from django.forms.widgets import ClearableFileInput
 
 class CustomImageWidget(ClearableFileInput):
@@ -28,3 +28,20 @@ class EventForm(forms.ModelForm):
                 format='%Y-%m-%dT%H:%M'
             )
         }
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['title', 'objective', 'status', 'start_date', 'end_date']
+            
+        widgets = {
+            'start_date': forms.DateInput(
+                attrs={'type': 'date'},
+                format='%Y-%m-%d'
+            ),
+            'end_date': forms.DateInput(
+                attrs={'type': 'date'},
+                format='%Y-%m-%d'
+            ),
+        }        
