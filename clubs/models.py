@@ -4,7 +4,7 @@ from config import settings
 # Create your models here.
 class Club(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True, default='')
     logo = models.ImageField(upload_to='club_logos/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

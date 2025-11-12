@@ -121,7 +121,15 @@
         </form>
         
         <a href="{% url 'club-edit' pk=club.pk %}" style="background: #007bff; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px;">Editar Informações do Clube</a>
-        <a href="#" style="background: #dc3545; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; margin-left: 10px;">Excluir Clube</a>
+    <form action="{% url 'club-delete' pk=club.pk %}" method="post" style="display: inline;">
+    {% csrf_token %}
+    
+    <button type="submit" 
+            style="background: #dc3545; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; font-family: sans-serif; font-size: 14px; margin-left: 10px;"
+            onclick="return confirm('ATENÇÃO:\n\nTem certeza que deseja excluir este clube?\n\nEsta ação é permanente e apagará TODOS os membros, projetos e eventos associados a ele.');">
+        Excluir Clube
+    </button>
+</form>
     </div>
 {% endif %}
 

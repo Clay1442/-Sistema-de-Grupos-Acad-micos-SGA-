@@ -127,3 +127,21 @@ def club_edit(request, pk):
 
     return render(request, 'clubs/club_edit.html', context)
 
+
+@login_required
+def club_delete(request, pk):
+    club = get_object_or_404(Club, pk=pk)
+    if request.user != club.advisor:
+        messages.error(request, 'ERRO: Você não tem permissão para deletar este clube.')
+        return redirect('club-detail', pk=club.pk)
+    
+    if request.method == 'POST':
+        club_name = club.name
+        club.delete()
+        messages.success(request, f'Clube "{club_name}" deletado com sucesso!')
+        return redirect('club-list')
+    
+    context = {
+        'club': club,
+    }
+    return render(request, 'clubs/club_delete_confirm.html', context)
