@@ -1,50 +1,148 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ club.name }}</title>
-    
+
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; }
-        .header { display: flex; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        .club-logo-large { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; margin-right: 20px; }
-        .header h1 { margin: 0; }
-        .header p { margin: 5px 0 0 0; color: #555; }
-        .section { margin-top: 30px; }
-        .section h2 { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-        .list-item { border: 1px solid #eee; border-radius: 5px; padding: 10px 15px; margin-bottom: 10px; }
-        .list-item h3 { margin: 0 0 5px 0; }
-        .list-item p { margin: 0; font-size: 0.9em; color: #333; }
-        .empty { color: #888; }
-        .back-link { display: inline-block; margin-top: 20px; text-decoration: none; background: #eee; padding: 10px 15px; border-radius: 5px; color: #333; }
-        .message.error { color: red; }
-        .message.success { color: green; }
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .club-logo-large {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            color: #555;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .section h2 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .list-item {
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+        }
+
+        .list-item h3 {
+            margin: 0 0 5px 0;
+        }
+
+        .list-item p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .empty {
+            color: #888;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background: #eee;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        .message.error {
+            color: red;
+        }
+
+        .message.success {
+            color: green;
+        }
     </style>
 </head>
-<body>
 
+<ody>
     <div class="header">
         {% if club.logo %}
-            <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}" class="club-logo-large">
+        <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}" class="club-logo-large">
         {% else %}
-            <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo-large">
+        <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo-large">
         {% endif %}
         <div>
             <h1>{{ club.name }}</h1>
-            <p>Responsável (criador): <strong>{{ club.advisor.get_full_name|default:club.advisor.username }}</strong></p>
+            <p>Responsável (criador): <strong>{{ club.advisor.get_full_name|default:club.advisor.username }}</strong>
+            </p>
         </div>
     </div>
 
+    <!--Seção Retornar a Home ou Edita/Excluir Clube-->
+    <a href="{% url 'club-list' %}" class="back-link">← Voltar para Meus Clubes</a>
+    {% if is_owner %}
+    <a href="{% url 'club-edit' pk=club.pk %}"
+        style="background: #007bff; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px;">Editar
+        Informações do Clube</a>
+    <form action="{% url 'club-delete' pk=club.pk %}" method="post" style="display: inline;">
+        {% csrf_token %}
+
+        <button type="submit"
+            style="background: #dc3545; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; font-family: sans-serif; font-size: 14px; margin-left: 10px;"
+            onclick="return confirm('ATENÇÃO:\n\nTem certeza que deseja excluir este clube?\n\nEsta ação é permanente e apagará TODOS os membros, projetos e eventos associados a ele.');">
+            Excluir Clube
+        </button>
+    </form>
+    </div>
+    {% endif %}
+    <!--Fim Da Seção-->
+
+    <!--Seção de Descrição do Grupo-->
     <div class="section">
         <h2>Descrição</h2>
-        <p>{{ club.description|linebreaksbr }}</p> </div>
+        <p>{{ club.description|linebreaksbr }}</p>
+    </div>
+    <!--Fim da Seção de Descrição do Grupo-->
 
+    <!--Seção de Membros do Grupo-->
     <div class="section">
-    <h2>Membros</h2>
-    
-    {% for membro in members %}
+        <h2>Membros</h2>
+        <!--Painel Para Administrador do Clube-->
+        {% if is_owner %}
+        <form method="post" style="margin-bottom: 20px;">
+            {% csrf_token %}
+            <label for="username">Adicionar Membro (pelo username):</label>
+            <input type="text" name="username" id="username" placeholder="Digite o username exato" required>
+            <button type="submit"
+                style="background: #28a745; color: white; border: none; padding: 5px 10px; cursor: pointer;">Adicionar</button>
+        </form>
+        {% endif %}
+        <!--Membros do Clube-->
+        {% for membro in members %}
         <div class="list-item">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
@@ -52,87 +150,71 @@
                     <p><strong>Cargo:</strong> {{ membro.position }}</p>
                     <p>Membro desde: {{ membro.input_date }}</p>
                 </div>
-                
+
                 {% if is_owner and membro.user != club.advisor %}
-                    <form action="{% url 'delete-member' pk=club.pk membership_id=membro.pk %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" 
-                                onclick="return confirm('Tem certeza que deseja remover este membro?');"
-                                style="background: #dc3545; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;">
-                            Excluir
-                        </button>
-                    </form>
+                <form action="{% url 'delete-member' pk=club.pk membership_id=membro.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Tem certeza que deseja remover este membro?');"
+                        style="background: #dc3545; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;">
+                        Excluir
+                    </button>
+                </form>
                 {% endif %}
             </div>
         </div>
-    {% empty %}
+        {% empty %}
         <p class="empty">Este clube ainda não possui membros cadastrados.</p>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
+    <!--Fim da seção de Membros do Grupo-->
 
+    <!--Seção de Projetos-->
     <div class="section">
         <h2>Projetos Ativos</h2>
         {% for projeto in projects %}
-            <div class="list-item">
-                <h3>{{ projeto.title }}</h3>
-                <p><strong>Status:</strong> {{ projeto.get_status_display }}</p>
-                <p>Início: {{ projeto.start_date }}</p>
-            </div>
+        <div class="list-item">
+            <h3>{{ projeto.title }}</h3>
+            <p><strong>Status:</strong> {{ projeto.get_status_display }}</p>
+            <p>Início: {{ projeto.start_date }}</p>
+        </div>
         {% empty %}
-            <p class="empty">Nenhum projeto em andamento no momento.</p>
+        <p class="empty">Nenhum projeto em andamento no momento.</p>
         {% endfor %}
     </div>
+    <!--Fim da seção de Projetos-->
 
+
+    <!--Seção de Eventos-->
     <div class="section">
         <h2>Próximos Eventos</h2>
         {% for evento in events %}
-            <div class="list-item">
-                <h3>{{ evento.title }}</h3>
-                <p><strong>Quando:</strong> {{ evento.event_date }}</sTrong>
-                <p><strong>Onde:</strong> {{ evento.location }}</p>
-            </div>
+        <div class="list-item">
+            <h3>{{ evento.title }}</h3>
+            <p><strong>Quando:</strong> {{ evento.event_date }}</sTrong>
+            <p><strong>Onde:</strong> {{ evento.location }}</p>
+        </div>
         {% empty %}
-            <p class="empty">Nenhum evento agendado no momento.</p>
+        <p class="empty">Nenhum evento agendado no momento.</p>
         {% endfor %}
     </div>
-
-    <a href="{% url 'club-list' %}" class="back-link">← Voltar para Meus Clubes</a>
-
+    {% if is_owner %}
+    <a href="{% url 'add-event' pk=club.pk %}"
+        style="background: #17a2b8; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
+        Criar Evento
+    </a>
+    <hr>
+    {% endif %}
+    <!--Fim da seção de Eventos-->
 
     {% if messages %}
     <ul class="messages" style="list-style: none; padding: 10px; background: #f0f0f0; border: 1px solid #ccc;">
         {% for message in messages %}
-            <li class="message {{ message.tags }}" >
-                {{ message }}
-            </li>
+        <li class="message {{ message.tags }}">
+            {{ message }}
+        </li>
         {% endfor %}
     </ul>
-{% endif %}
-
-{% if is_owner %}
-    <div class="section" style="background-color: #f9f9f9; padding: 20px; border-radius: 8px;">
-        <h2>Painel do Conselheiro</h2>
-        
-        <form method="post" style="margin-bottom: 20px;">
-            {% csrf_token %}
-            <label for="username">Adicionar Membro (pelo username):</label>
-            <input type="text" name="username" id="username" placeholder="Digite o username exato" required>
-            <button type="submit" style="background: #28a745; color: white; border: none; padding: 5px 10px; cursor: pointer;">Adicionar</button>
-        </form>
-        
-        <a href="{% url 'club-edit' pk=club.pk %}" style="background: #007bff; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px;">Editar Informações do Clube</a>
-    <form action="{% url 'club-delete' pk=club.pk %}" method="post" style="display: inline;">
-    {% csrf_token %}
-    
-    <button type="submit" 
-            style="background: #dc3545; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; font-family: sans-serif; font-size: 14px; margin-left: 10px;"
-            onclick="return confirm('ATENÇÃO:\n\nTem certeza que deseja excluir este clube?\n\nEsta ação é permanente e apagará TODOS os membros, projetos e eventos associados a ele.');">
-        Excluir Clube
-    </button>
-</form>
-    </div>
-{% endif %}
-
+    {% endif %}
 
 </body>
 </html>

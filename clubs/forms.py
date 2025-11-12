@@ -1,5 +1,5 @@
 from django import forms
-from .models import Club
+from .models import Club, Event
 from django.forms.widgets import ClearableFileInput
 
 class CustomImageWidget(ClearableFileInput):
@@ -15,4 +15,16 @@ class ClubForm(forms.ModelForm):
         
         widgets = {
             'logo': CustomImageWidget(),
+        }
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['title', 'description', 'event_date', 'location']        
+
+        widgets = {
+            'event_date': forms.DateTimeInput(
+                attrs={'type': 'datetime-local'},
+                format='%Y-%m-%dT%H:%M'
+            )
         }
