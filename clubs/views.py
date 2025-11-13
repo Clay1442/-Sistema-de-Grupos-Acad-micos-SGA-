@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import User
 from .models import Club, Membership, Project, Event
-from .forms import ClubForm, EventForm, ProjectForm
+from .forms import ClubForm, EventForm, ProjectForm, ProjectStatusForm
 
 
 # Create your views here.
@@ -203,3 +203,32 @@ def project_create(request, pk):
 
 
     
+login_required
+def project_detail(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    club = project.club
+
+    is_advisor = (request.user == club.advisor)
+    is_member = Membership.objects.filter(club=club, user=request.user).exists()
+
+    if not (is_advisor or is_member):
+        messages.error(request, 'Você não tem permissão para ver este projeto.')
+        return redirect('club-detail', pk=club.pk)
+    
+    if request.method == 'POST' and is_advisor:
+        status_form = ProjectStatusForm(request.POST, instance=project)
+        if status_form.is_valid():
+            status_form.save()
+            messages.success(request, 'Status do projeto atualizado com sucesso!')
+            return redirect('project-detail', pk=project.pk)
+        
+    else:
+        status_form = ProjectStatusForm(instance=project)    
+    
+
+    context = {
+            'project': project,
+            'is_advisor': is_advisor,
+            'status_form': status_form,
+        }
+    return render(request, 'clubs/project_detail.html', context)

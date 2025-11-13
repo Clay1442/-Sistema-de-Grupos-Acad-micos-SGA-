@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ project.title }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .header {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            color: #555;
+        }
+
+        .status-badge {
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .section h2 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background: #eee;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>{{ project.title }}</h1>
+        <p>Do clube:
+            <a href="{% url 'club-detail' pk=project.club.pk %}">{{ project.club.name }}</a>
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Detalhes do Projeto</h2>
+        <p>
+            <strong>Status:</strong>
+            <span class="status-badge">{{ project.get_status_display }}</span>
+        </p>
+
+        <!--Alteração de Status-->
+        {% if is_advisor %}
+        <form method="post"
+            style="margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
+            {% csrf_token %}
+            <label for="id_status" style="font-weight: bold;">Mudar Status do Projeto:</label>
+
+            {{ status_form.status }}
+
+            <button type="submit"
+                style="background: #007bff; color: white; border: none; padding: 5px 8px; cursor: pointer;">
+                Salvar Status
+            </button>
+        </form>
+        <!--Fim da Alteração de Status-->
+        {% endif %}
+
+        {% if project.description %}
+        {% endif %}
+        <p><strong>Data de Início:</strong> {{ project.start_date }}</p>
+        {% if project.end_date %}
+        <p><strong>Data de Conclusão:</strong> {{ project.end_date }}</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>Objetivo</h2>
+        <p>{{ project.objective|linebreaksbr }}</p>
+    </div>
+
+    <a href="{% url 'club-detail' pk=project.club.pk %}" class="back-link">
+        ← Voltar para {{ project.club.name }}
+    </a>
+
+</body>
+
+</html>

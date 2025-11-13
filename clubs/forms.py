@@ -45,3 +45,9 @@ class ProjectForm(forms.ModelForm):
                 format='%Y-%m-%d'
             ),
         }        
+
+
+class ProjectStatusForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['status']        
