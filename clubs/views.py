@@ -303,3 +303,56 @@ def delete_event(request, pk, event_id):
         'club': club,
     }
     return render(request, 'clubs/club_detail.html', context)
+
+
+@login_required
+def event_detail(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    club = event.club
+
+    is_advisor = (request.user == club.advisor)
+    is_manager = Membership.objects.filter(club=club, user=request.user, position='Manager').exists()
+    is_member = Membership.objects.filter(club=club, user=request.user).exists()
+
+    can_manage = (is_advisor or is_manager)
+
+    if not can_manage and not is_member:
+        messages.error(request, 'Você não tem permissão para ver este evento.')
+        return redirect('club-detail', pk=club.pk)
+    
+    context = {
+            'event': event,
+            'club': club,
+            'can_manage': can_manage,   
+        }
+    return render(request, 'clubs/event_detail.html', context)
+
+
+@login_required
+def event_edit(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    club = event.club
+
+    is_advisor = (request.user == club.advisor)
+    is_manager = Membership.objects.filter(club=club, user=request.user, position='manager').exists()
+    
+    if not (is_advisor or is_manager):
+        messages.error(request, 'ERRO: Você não tem permissão para editar este evento.')
+        return redirect('club-detail', pk=club.pk)
+
+    if request.method == 'POST':    
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Evento atualizado com sucesso!')
+            return redirect('event-detail', pk=event.pk)
+
+    else:
+        form = EventForm(instance=event)
+
+    context = {
+        'form': form,
+        'event': event, 
+        'club': club,   
+    }
+    return render(request, 'clubs/event_edit.html', context)

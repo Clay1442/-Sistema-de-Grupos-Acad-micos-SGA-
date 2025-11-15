@@ -272,9 +272,11 @@
         <div class="list-item">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
+                    <a href="{% url 'event-detail' pk=evento.pk %}" style="text-decoration: none; color: #333;">
                     <h3>{{ evento.title }}</h3>
                     <p><strong>Quando:</strong> {{ evento.event_date }}</sTrong>
                     <p><strong>Onde:</strong> {{ evento.location }}</p>
+                    </a>
                 </div>
                 {% if user_logged == club.advisor %}
                 <form action="{% url 'delete-event' pk=club.pk event_id=evento.pk %}" method="post">
