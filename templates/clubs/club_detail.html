@@ -175,7 +175,7 @@
                     <p>Membro desde: {{ membro.input_date }}</p>
                 </div>
 
-                {% if is_owner and membro.user != club.advisor %}
+                {% if user_logged == club.advisor %}
                 <form action="{% url 'delete-member' pk=club.pk membership_id=membro.pk %}" method="post">
                     {% csrf_token %}
                     <button type="submit" onclick="return confirm('Tem certeza que deseja remover este membro?');"
@@ -183,7 +183,27 @@
                         Excluir
                     </button>
                 </form>
-                {% endif %}
+
+                <form action="{% url 'set-member-role' pk=club.pk membership_id=membro.pk %}" method="post">
+                    {% csrf_token %}
+                    <label for="position-{{ membro.pk }}" style="font-size: 0.9em; font-weight: bold;">Mudar
+                        cargo:</label>
+
+                    <select name="position" id="position-{{ membro.pk }}">
+
+                        {% for value, label in position_choices %}
+                        <option value="{{ value }}" {% if membro.position == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                    <button type="submit"
+                        style="background: #17a2b8; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;">
+                        Atualizar Cargo
+                        {% endif %}
+                </form>
+
             </div>
         </div>
         {% empty %}
@@ -208,16 +228,31 @@
 
         {% for projeto in projects %}
         <div class="list-item">
-            <h3><a href="{% url 'project-detail' pk=projeto.pk %}" style="text-decoration: none; color: #333;">
-            {{ projeto.title }}
-        </a></h3>
-            <p><strong>Status:</strong> {{ projeto.get_status_display }}</p>
-            <p>Início: {{ projeto.start_date }}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3><a href="{% url 'project-detail' pk=projeto.pk %}" style="text-decoration: none; color: #333;">
+                            {{ projeto.title }}
+                        </a></h3>
+                    <p><strong>Status:</strong> {{ projeto.get_status_display }}</p>
+                    <p>Início: {{ projeto.start_date }}</p>
+                </div>
+
+                {% if is_owner == club.advisor %}
+                <form action="{% url 'delete-project' pk=club.pk project_id=projeto.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Tem certeza que deseja remover este membro?');"
+                        style="background: #dc3545; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;">
+                        Excluir
+                    </button>
+                </form>
+                {% endif %}
+            </div>
         </div>
         {% empty %}
         <p class="empty">Nenhum projeto em andamento no momento.</p>
         {% endfor %}
     </div>
+
     <hr>
     <!--Fim da seção de Projetos-->
 
@@ -226,14 +261,13 @@
     <div class="section">
         <div class="container-flex">
             <h2 style="margin: 0; border: 0px;">Próximos Eventos</h2>
-            {% if is_owner %}
+            {% if user_logged == club.advisor %}
             <a href="{% url 'add-event' pk=club.pk %}"
                 style="background: #17a2b8; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
                 Adicionar Evento
             </a>
+            {% endif %}
         </div>
-        {% endif %}
-
         {% for evento in events %}
         <div class="list-item">
             <h3>{{ evento.title }}</h3>
@@ -246,6 +280,6 @@
     </div>
     <!--Fim da seção de Eventos-->
 
-    </body>
+</body>
 
 </html>

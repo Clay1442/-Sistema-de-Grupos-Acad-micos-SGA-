@@ -26,17 +26,21 @@ class Club(models.Model):
 
 # Membership class
 class Membership(models.Model):
+    POSITION_CHOICES = (
+        ('member', 'Membro'),
+        ('manager', 'Gerente'),
+    ) 
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
-    position = models.CharField(max_length=100, default='Member')
+    position = models.CharField(max_length=100, choices=POSITION_CHOICES, default='Member')
     input_date = models.DateField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'club')
 
     def __str__(self):
-        return f"{self.user.username} - {self.club.name} as {self.position}"
-    
+        return f"{self.user.username} - {self.club.name} ({self.get_position_display()})"    
 
 # Event class
 class Event(models.Model):

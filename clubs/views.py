@@ -28,8 +28,10 @@ def club_detail(request, pk):
     club = get_object_or_404(Club, pk=pk)
 
     is_owner = (request.user == club.advisor)
+    is_manager = Membership.objects.filter(club=club, user=request.user, position='Manager').exists()
+    can_manage = (is_owner or is_manager) 
 
-    if request.method == 'POST' and is_owner:
+    if request.method == 'POST' and can_manage:
         username_to_add = request.POST.get('username')
         try:
             user_to_add = User.objects.get(username=username_to_add)
@@ -58,7 +60,9 @@ def club_detail(request, pk):
         'projects': projects,
         'events': events,
         'members': members,
-        'is_owner': is_owner,
+        'is_owner': can_manage,
+        'user_logged': request.user,
+        'position_choices': Membership.POSITION_CHOICES,
     }
     
     return render(request, 'clubs/club_detail.html', context)
@@ -73,7 +77,7 @@ def club_create(request):
             new_club = form.save(commit=False)
             new_club.advisor = request.user
             new_club.save()
-            return redirect('club_detail', pk=new_club.pk)
+            return redirect('club-detail', pk=new_club.pk)
 
     else:
         form = ClubForm()
@@ -178,7 +182,10 @@ login_required
 def project_create(request, pk):
     club = get_object_or_404(Club, pk=pk)
 
-    if request.user != club.advisor:
+    is_manager = Membership.objects.filter(club=club, user=request.user, position='Manager').exists()
+    can_manage_projects = (request.user == club.advisor or is_manager)
+
+    if not can_manage_projects:
         messages.error(request, 'ERRO: Você não tem permissão para adicionar projetos a este clube.')
         return redirect('club-detail', pk=club.pk)
 
@@ -202,6 +209,22 @@ def project_create(request, pk):
     return render(request, 'clubs/project_create.html', context)
 
 
+login_required
+def delete_project(request, pk, project_id):
+    club = get_object_or_404(Club, pk=pk)
+    project = get_object_or_404(Project, pk=project_id)
+
+    if request.user != club.advisor:
+        messages.error(request, 'Você não tem permissão para realizar esta ação.')
+        return redirect('club-detail', pk=club.pk)
+    
+    if request.method == 'POST':
+        project_title = project.title
+        project.delete()
+        messages.success(request, f'Projeto "{project_title}" removido com sucesso do clube.')
+        return redirect('club-detail', pk=club.pk)
+    
+
     
 login_required
 def project_detail(request, pk):
@@ -209,13 +232,16 @@ def project_detail(request, pk):
     club = project.club
 
     is_advisor = (request.user == club.advisor)
+    is_manager = Membership.objects.filter(club=club, user=request.user, position='Manager').exists()
     is_member = Membership.objects.filter(club=club, user=request.user).exists()
+
+    can_manage_project = (is_advisor or is_manager)
 
     if not (is_advisor or is_member):
         messages.error(request, 'Você não tem permissão para ver este projeto.')
         return redirect('club-detail', pk=club.pk)
     
-    if request.method == 'POST' and is_advisor:
+    if request.method == 'POST' and can_manage_project:
         status_form = ProjectStatusForm(request.POST, instance=project)
         if status_form.is_valid():
             status_form.save()
@@ -228,7 +254,32 @@ def project_detail(request, pk):
 
     context = {
             'project': project,
-            'is_advisor': is_advisor,
+            'is_advisor': can_manage_project,
             'status_form': status_form,
         }
     return render(request, 'clubs/project_detail.html', context)
+    
+
+@login_required
+def set_member_role(request, pk, membership_id):
+    if request.method != 'POST':
+        return redirect('club-detail', pk=pk)
+    
+    club = get_object_or_404(Club, pk=pk)
+    membership = get_object_or_404(Membership, pk=membership_id)
+
+    if request.user != club.advisor or membership.club != club:
+        messages.error(request, 'Você não tem permissão para realizar esta ação.')
+        return redirect('club-detail', pk=club.pk)
+    
+    new_position = request.POST.get('position')    
+
+    valid_positions = [choice[0] for choice in Membership.POSITION_CHOICES]
+    if new_position in valid_positions:
+        membership.position = new_position
+        membership.save()
+        messages.success(request, f'Cargo do membro "{membership.user.username}" atualizada para "{new_position}".')
+    else:
+        messages.error(request, 'Cargo inválida selecionada.')    
+
+    return redirect('club-detail', pk=club.pk)    
