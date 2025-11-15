@@ -237,10 +237,10 @@
                     <p>Início: {{ projeto.start_date }}</p>
                 </div>
 
-                {% if is_owner == club.advisor %}
+                {% if user_logged == club.advisor %}
                 <form action="{% url 'delete-project' pk=club.pk project_id=projeto.pk %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Tem certeza que deseja remover este membro?');"
+                    <button type="submit" onclick="return confirm('Tem certeza que deseja remover este projeto?');"
                         style="background: #dc3545; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;">
                         Excluir
                     </button>
@@ -270,9 +270,22 @@
         </div>
         {% for evento in events %}
         <div class="list-item">
-            <h3>{{ evento.title }}</h3>
-            <p><strong>Quando:</strong> {{ evento.event_date }}</sTrong>
-            <p><strong>Onde:</strong> {{ evento.location }}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3>{{ evento.title }}</h3>
+                    <p><strong>Quando:</strong> {{ evento.event_date }}</sTrong>
+                    <p><strong>Onde:</strong> {{ evento.location }}</p>
+                </div>
+                {% if user_logged == club.advisor %}
+                <form action="{% url 'delete-event' pk=club.pk event_id=evento.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Tem certeza que deseja remover este projeto?');"
+                        style="background: #dc3545; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;">
+                        Excluir
+                    </button>
+                </form>
+                {% endif %}
+            </div>
         </div>
         {% empty %}
         <p class="empty">Nenhum evento agendado no momento.</p>

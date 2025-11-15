@@ -283,3 +283,23 @@ def set_member_role(request, pk, membership_id):
         messages.error(request, 'Cargo inválida selecionada.')    
 
     return redirect('club-detail', pk=club.pk)    
+
+@login_required
+def delete_event(request, pk, event_id):
+    club = get_object_or_404(Club, pk=pk)
+    event = get_object_or_404(Event, pk=event_id)
+
+    if request.user != club.advisor:
+        messages.error(request, 'Você não tem permissão para realizar esta ação.')
+        return redirect('club-detail', pk=club.pk)
+    
+    if request.method == 'POST':
+        event_title = event.title
+        event.delete()
+        messages.success(request, f'Evento "{event_title}" removido com sucesso do clube.')
+        return redirect('club-detail', pk=club.pk)
+    
+    context = {
+        'club': club,
+    }
+    return render(request, 'clubs/club_detail.html', context)
