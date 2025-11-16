@@ -70,41 +70,46 @@
             <strong>Status:</strong>
             <span class="status-badge">{{ project.get_status_display }}</span>
         </p>
-
-        <!--Alteração de Status-->
-        {% if is_advisor %}
-        <form method="post"
-            style="margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
-            {% csrf_token %}
-            <label for="id_status" style="font-weight: bold;">Mudar Status do Projeto:</label>
-
-            {{ status_form.status }}
-
-            <button type="submit"
-                style="background: #007bff; color: white; border: none; padding: 5px 8px; cursor: pointer;">
-                Salvar Status
-            </button>
-        </form>
-        <!--Fim da Alteração de Status-->
-        {% endif %}
-
-        {% if project.description %}
-        {% endif %}
         <p><strong>Data de Início:</strong> {{ project.start_date }}</p>
         {% if project.end_date %}
         <p><strong>Data de Conclusão:</strong> {{ project.end_date }}</p>
         {% endif %}
     </div>
-
     <div class="section">
-        <h2>Objetivo</h2>
-        <p>{{ project.objective|linebreaksbr }}</p>
+        <h2>Descrição</h2>
+        <p>{{ project.objective }}</p>
     </div>
 
-    <a href="{% url 'club-detail' pk=project.club.pk %}" class="back-link">
-        ← Voltar para {{ project.club.name }}
-    </a>
 
+    {% if is_advisor %}
+
+    <hr style="border-bottom: 1px solid #ccc;">
+
+    <div class="management-panel"
+        style="margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
+
+        <form method="post" style="margin-bottom: 15px;">
+            {% csrf_token %}
+            <label for="id_status" style="font-weight: bold;">Mudar Status:</label>
+            {{ status_form.status }}
+            <button type="submit"
+                style="background: #2f8bee; color: white; border: none; padding: 5px 8px; cursor: pointer;">
+                Salvar Status
+            </button>
+        </form>
+
+        <hr style="border: 0; border-top: 1px solid #ddd; padding: 4px;">
+
+        <a href="{% url 'project-edit' pk=project.pk %}"
+            style="background: #2f8bee; color: #ffffff; padding: 8px 12px; text-decoration: none; border-radius: 5px;">
+            Editar Detalhes do Projeto (Título, Datas, etc.)
+        </a>
+
+    </div>
+    {% endif %}
+    </div>
+
+    <a href="{% url 'club-detail' pk=club.pk %}" class="back-link"> ← Voltar para {{ club.name }} </a>
 </body>
 
 </html>

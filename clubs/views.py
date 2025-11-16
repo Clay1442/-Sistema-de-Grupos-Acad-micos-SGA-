@@ -256,6 +256,7 @@ def project_detail(request, pk):
             'project': project,
             'is_advisor': can_manage_project,
             'status_form': status_form,
+            'club': club,
         }
     return render(request, 'clubs/project_detail.html', context)
     
@@ -356,3 +357,33 @@ def event_edit(request, pk):
         'club': club,   
     }
     return render(request, 'clubs/event_edit.html', context)
+
+@login_required
+def project_edit(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    club = project.club
+
+    is_advisor = (request.user == club.advisor)
+    is_manager = Membership.objects.filter(club=club, user=request.user, position='Manager').exists()
+    
+    if not (is_advisor or is_manager):
+        messages.error(request, 'ERRO: Você não tem permissão para editar este projeto.')
+        return redirect('club-detail', pk=club.pk)
+
+    if request.method == 'POST':    
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Projeto atualizado com sucesso!')
+            return redirect('project-detail', pk=project.pk)
+
+    else:
+        form = ProjectForm(instance=project)
+
+    context = {
+        'form': form,
+        'project': project, 
+        'club': club,   
+    }
+    return render(request, 'clubs/project_edit.html', context)
+    

@@ -215,15 +215,15 @@
 
     <!--Seção de Projetos-->
     <div class="section">
-        {% if is_owner %}
         <div class="container-flex">
             <h2 style="margin: 0; border: 0px;">Projetos Ativos </h2>
+            {% if is_owner %}
             <a href="{% url 'project-create' pk=club.pk %}"
                 style="background: #17a2b8; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
                 Adicionar Projeto
             </a>
+            {% endif %}
         </div>
-        {% endif %}
 
 
         {% for projeto in projects %}
