@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registo</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 40px auto; padding: 15px; background-color: #f4f4f4; }
+        .form-container { border: 1px solid #ddd; padding: 25px; border-radius: 8px; background-color: #ffffff; }
+        .form-field { margin-bottom: 20px; }
+        form label { font-weight: bold; display: block; margin-bottom: 5px; }
+        form input[type="text"], form input[type="password"], form input[type="email"] {
+            width: 100%; padding: 10px; border: 1px solid #ccc;
+            border-radius: 4px; box-sizing: border-box;
+        }
+        .submit-btn { background: #28a745; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
+        .small-text { margin-top: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Criar Conta</h1>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-field">
+                <label for="{{ form.username.id_for_label }}">Username:</label>
+                {{ form.username }}
+                {% if form.username.errors %}<small style="color: red;">{{ form.username.errors|first }}</small>{% endif %}
+            </div>
+            <div class="form-field">
+                <label for="{{ form.first_name.id_for_label }}">Primeiro Nome:</label>
+                {{ form.first_name }}
+            </div>
+            <div class="form-field">
+                <label for="{{ form.last_name.id_for_label }}">Apelido:</label>
+                {{ form.last_name }}
+            </div>
+            <div class="form-field">
+                <label for="{{ form.email.id_for_label }}">Email:</label>
+                {{ form.email }}
+                {% if form.email.errors %}<small style="color: red;">{{ form.email.errors|first }}</small>{% endif %}
+            </div>
+            <div class="form-field">
+                <label for="{{ form.password1.id_for_label }}">Password:</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}<small style="color: red;">{{ form.password1.errors|first }}</small>{% endif %}
+            </div>
+            <div class="form-field">
+                <label for="{{ form.password2.id_for_label }}">Confirme a Password:</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}<small style="color: red;">{{ form.password2.errors|first }}</small>{% endif %}
+            </div>
+            
+            <button type="submit" class="submit-btn">Criar Conta</button>
+        </form>
+        
+        <div class="small-text">
+            Já tem uma conta? 
+            <a href="{% url 'login' %}">Faça login</a>
+        </div>
+    </div>
+</body>
+</html>

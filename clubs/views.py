@@ -28,7 +28,7 @@ def club_detail(request, pk):
     club = get_object_or_404(Club, pk=pk)
 
     is_owner = (request.user == club.advisor)
-    is_manager = Membership.objects.filter(club=club, user=request.user, position='Manager').exists()
+    is_manager = Membership.objects.filter(club=club, user=request.user, position='manager').exists()
     can_manage = (is_owner or is_manager) 
 
     if request.method == 'POST' and can_manage:
@@ -182,8 +182,9 @@ login_required
 def project_create(request, pk):
     club = get_object_or_404(Club, pk=pk)
 
-    is_manager = Membership.objects.filter(club=club, user=request.user, position='Manager').exists()
-    can_manage_projects = (request.user == club.advisor or is_manager)
+    is_owner = (request.user == club.advisor)
+    is_manager = Membership.objects.filter(club=club, user=request.user, position='manager').exists()
+    can_manage_projects = (is_owner or is_manager)
 
     if not can_manage_projects:
         messages.error(request, 'ERRO: Você não tem permissão para adicionar projetos a este clube.')

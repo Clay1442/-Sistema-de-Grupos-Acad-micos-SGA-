@@ -1,68 +1,124 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Clubes</title> 
-    
+    <title>Meus Clubes</title>
+
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; }
-        .club-card { border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: flex; }
-        .club-logo { width: 100px; height: 100px; object-fit: cover; border-radius: 4px; margin-right: 16px; }
-        .club-info h2 { margin-top: 0; }
-        .empty { color: #888; }
-        h1, h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .club-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+        }
+
+        .club-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 16px;
+        }
+
+        .club-info h2 {
+            margin-top: 0;
+        }
+
+        .empty {
+            color: #888;
+        }
+
+        h1,
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: #ffffff;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+        }
     </style>
 </head>
+
 <body>
 
     <h1>Olá, {{ request.user.first_name|default:request.user.username }}!</h1>
-    <h3><a href="/club/new/" style="text-decoration: none; background-color: #669e31; padding: 5px; border-radius: 5px; color: #ffffff;"> Criar um Novo Grupo </a></h3>
+    <div class="header-container">
+        <h3><a href="/club/new/"
+                style="text-decoration: none; background-color: #669e31; padding: 5px; border-radius: 5px; color: #ffffff;">
+                Criar um Novo Grupo </a></h3>
+
+        <h3><a href="{% url 'logout' %}" class="logout-btn">
+                Sair (Logout)
+            </a></h3>
+    </div>
     <p>Aqui estão os clubes e grupos que você gerencia ou participa.</p>
-    
+
     <h2>Clubes que você lidera (Conselheiro)</h2>
     {% for club in clubs_advisor %}
-        <div class="club-card">
-            {% if club.logo %}
-                <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}" class="club-logo">
-            {% else %}
-                <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo">
-            {% endif %} 
-            <div class="club-info">
+    <div class="club-card">
+        {% if club.logo %}
+        <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}" class="club-logo">
+        {% else %}
+        <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo">
+        {% endif %}
+        <div class="club-info">
             <h2>
                 <a href="{% url 'club-detail' pk=club.pk %}" style="text-decoration: none; color: #333;">
                     {{ club.name }}
                 </a>
             </h2>
-                <p>{{ club.description|truncatewords:30 }}</p> 
-            </div>
+            <p>{{ club.description|truncatewords:30 }}</p>
         </div>
+    </div>
     {% empty %}
-        <p class="empty">Você ainda não é conselheiro de nenhum clube.</p>
+    <p class="empty">Você ainda não é conselheiro de nenhum clube.</p>
     {% endfor %}
 
 
     <h2>Clubes que você participa (Membro)</h2>
     {% for club in member_clubs %}
-        <div class="club-card">
-            {% if club.logo %}
-                <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}" class="club-logo">
-            {% else %}
-                <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo">
-            {% endif %} 
-            <div class="club-info">
-                <h2>
+    <div class="club-card">
+        {% if club.logo %}
+        <img src="{{ club.logo.url }}" alt="Logo do {{ club.name }}" class="club-logo">
+        {% else %}
+        <img src="{% static 'images/default_logo.png' %}" alt="Logo Padrão" class="club-logo">
+        {% endif %}
+        <div class="club-info">
+            <h2>
                 <a href="{% url 'club-detail' pk=club.pk %}" style="text-decoration: none; color: #333;">
-                        {{ club.name }}
-                        </a>
-                    </h2>
-                <p>{{ club.description|truncatewords:30 }}</p> 
-                </div>
+                    {{ club.name }}
+                </a>
+            </h2>
+            <p>{{ club.description|truncatewords:30 }}</p>
         </div>
+    </div>
     {% empty %}
-        <p class="empty">Você ainda não é membro de nenhum clube.</p>
+    <p class="empty">Você ainda não é membro de nenhum clube.</p>
     {% endfor %}
 
 </body>
+
 </html>
