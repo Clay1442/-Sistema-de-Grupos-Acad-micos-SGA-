@@ -4,7 +4,10 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
     <title>{{ event.title }}</title>
+
     <style>
         body {
             font-family: sans-serif;
@@ -56,41 +59,42 @@
 </head>
 
 <body>
+    <div class="dataset-body">
 
-    <div class="header">
-        <h1>{{ event.title }}</h1>
-        <p>Do clube:
-            <a href="{% url 'club-detail' pk=club.pk %}">{{ club.name }}</a>
-        </p>
+        <div class="header">
+            <h1>{{ event.title }}</h1>
+            <p>Do clube:
+                <a href="{% url 'club-detail' pk=club.pk %}">{{ club.name }}</a>
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Detalhes do Evento</h2>
+            <p><strong>Quando:</strong> {{ event.event_date }}</p>
+            <p><strong>Onde:</strong> {{ event.location }}</p>
+        </div>
+
+        <div class="section">
+            <h2>Descrição</h2>
+            <p>{{ event.description|linebreaksbr }}</p>
+        </div>
+
+        {% if can_manage %}
+        <div class="management-panel">
+            <h2>Gerenciar Evento</h2>
+
+            <a href="{% url 'event-edit' pk=event.pk %}"
+                style="background: #007bff; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px;">
+                Editar Título/Descrição
+            </a>
+
+        </div>
+        {% endif %}
+
     </div>
-
-    <div class="section">
-        <h2>Detalhes do Evento</h2>
-        <p><strong>Quando:</strong> {{ event.event_date }}</p>
-        <p><strong>Onde:</strong> {{ event.location }}</p>
-    </div>
-
-    <div class="section">
-        <h2>Descrição</h2>
-        <p>{{ event.description|linebreaksbr }}</p>
-    </div>
-
-    {% if can_manage %}
-    <div class="management-panel">
-        <h2>Gerenciar Evento</h2>
-
-        <a href="{% url 'event-edit' pk=event.pk %}"
-            style="background: #007bff; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px;">
-            Editar Título/Descrição
-        </a>
-
-    </div>
-    {% endif %}
-
     <a href="{% url 'club-detail' pk=club.pk %}" class="back-link">
         ← Voltar para {{ club.name }}
     </a>
-
 </body>
 
 </html>

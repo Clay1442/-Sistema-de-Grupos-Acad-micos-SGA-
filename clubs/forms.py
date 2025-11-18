@@ -5,7 +5,7 @@ from django.forms.widgets import ClearableFileInput
 class CustomImageWidget(ClearableFileInput):
     initial_text = '' 
     input_text = '' 
-    clear_checkbox_label = 'Remover imagem atual' 
+    clear_checkbox_label = 'Trocar imagem atual: ' 
     template_with_initial = '%(clear_template)s <br> %(input_template)s'
 
 class ClubForm(forms.ModelForm):

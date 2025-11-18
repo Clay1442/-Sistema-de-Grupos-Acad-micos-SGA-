@@ -14,8 +14,6 @@ class ClubAdmin(admin.ModelAdmin):
     
     
     autocomplete_fields = ('advisor',)
-    
-   
     inlines = [MembershipInline]
 
 

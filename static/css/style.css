@@ -1,0 +1,15 @@
+body {
+    background-color: #72a7a7a6;
+}
+
+.dataset-body {
+    background-color: #eee;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+
+.back-link:hover {
+    background-color: #494949;
+    color: #ffffff;
+}

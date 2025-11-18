@@ -4,7 +4,9 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>{{ project.title }}</title>
+
     <style>
         body {
             font-family: sans-serif;
@@ -56,6 +58,7 @@
 </head>
 
 <body>
+    <div class="dataset-body">
 
     <div class="header">
         <h1>{{ project.title }}</h1>
@@ -107,8 +110,7 @@
 
     </div>
     {% endif %}
-    </div>
-
+</div>
     <a href="{% url 'club-detail' pk=club.pk %}" class="back-link"> ← Voltar para {{ club.name }} </a>
 </body>
 

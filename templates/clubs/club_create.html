@@ -1,36 +1,128 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
     <title>Criar Novo Clube</title>
-    
+
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; }
-        form { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
-        form p { display: grid; grid-template-columns: 150px 1fr; gap: 10px; margin-bottom: 15px; }
-        form label { font-weight: bold; }
-        form input, form textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .submit-btn { background: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        .back-link { display: inline-block; margin-top: 20px; text-decoration: none; background: #eee; padding: 10px 15px; border-radius: 5px; color: #333; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+        }
+
+        h1 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .form-container {
+            border: 1px solid #ddd;
+            padding: 25px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        form label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+
+        form input[type="text"],
+        form input[type="datetime-local"],
+        form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background: #eee;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #333;
+        }
+
+        @media (min-width: 600px) {
+            .submit-btn {
+                width: auto;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-    <h1>Criar Novo Clube</h1>
-    <p>Preencha os dados abaixo para criar seu novo clube. Você será definido como o Conselheiro (Advisor) automaticamente.</p>
+    <div class="container">
 
-    <form method="post" enctype="multipart/form-data">
-        
-        {% csrf_token %}
+        <h1>Criar Novo Clube</h1>
+        <p>Preencha os dados abaixo para criar seu novo clube. Você será definido como o Conselheiro (Advisor)
+            automaticamente.</p>
+        <div class="form-container">
+            <form method="post" enctype="multipart/form-data">
 
-        {{ form.as_p }}
+                {% csrf_token %}
 
-        <button type="submit" class="submit-btn">Salvar e Criar Clube</button>
-    </form>
+                <div class="form-field">
+                    <label for="{{ form.title.id_for_label }}">Nome Do Clube:</label>
+                    {{ form.name }}
+                </div>
 
-    <a href="{% url 'club-list' %}" class="back-link">← Voltar</a>
+                <div class="form-field">
+                    <label for="{{ form.description.id_for_label }}">Descrição:</label>
+                    {{ form.description }}
+                </div>
 
+                <div class="form-field">
+                    <label for="{{ form.event_date.id_for_label }}">Logo:</label>
+                    {{ form.logo }}
+                </div>
+
+                <button type="submit" class="submit-btn">Salvar e Criar Clube</button>
+            </form>
+        </div>
+        <a href="{% url 'club-list' %}" class="back-link">← Voltar</a>
+    </div>
 </body>
+
 </html>

@@ -206,6 +206,8 @@ def project_create(request, pk):
     context = {
         'form': form,
         'club': club,
+        'status_choices': Project.STATUS_CHOICES,
+
     }
     return render(request, 'clubs/project_create.html', context)
 
