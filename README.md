@@ -25,6 +25,11 @@ O objetivo é fornecer uma plataforma centralizada e eficiente para a criação,
 |Banco de Dados|   SQLite3 (Desenvolvimento)    |Banco de dados leve, ideal para RAD e prototipagem local.
 |Estilização|  HTML5 / CSS3 Puro   |Design Responsivo (Mobile-First) e Estilos Customizados. 
 
+# Modelagem do Projeto
+<img width="1812" height="933" alt="SGA modelagem" src="https://github.com/user-attachments/assets/5d7a4285-2333-46a3-a32b-09aa336a6f9c" />
+
+
+
 # ⚙️ Guia de Configuração e Instalação
 **Siga estes passos para ter o projeto rodando localmente (ambiente de desenvolvimento).**
 
