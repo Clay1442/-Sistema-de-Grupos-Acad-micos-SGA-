@@ -24,6 +24,15 @@
             padding: 16px;
             margin-bottom: 16px;
             display: flex;
+
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+
+        .club-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
         }
 
         .club-logo {
@@ -55,6 +64,11 @@
             text-decoration: none;
             border-radius: 5px;
             font-size: 0.9em;
+        }
+
+        .logout-btn:hover {
+            background-color: #971515;
+            box-shadow: 0 10px 20px rgba(90, 86, 86, 0.3);
         }
 
         .header-container {
