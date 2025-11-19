@@ -78,6 +78,20 @@
             border-bottom: 2px solid #eee;
         }
 
+        .creategrp-btn:hover {
+            background-color: #2a662a;
+            box-shadow: 0 10px 20px rgba(90, 86, 86, 0.3);
+
+        }
+
+        .creategrp-btn {
+            text-decoration: none;
+            background-color: #669e31;
+            padding: 5px;
+            border-radius: 5px;
+            color: #ffffff;
+        }
+
 
         @media (max-width: 700px) {
             body {
@@ -112,11 +126,10 @@
     <div class="dataset-body">
         <h1>Olá, {{ request.user.first_name|default:request.user.username }}!</h1>
         <div class="header-container">
-            <h3><a href="/club/new/"
-                    style="text-decoration: none; background-color: #669e31; padding: 5px; border-radius: 5px; color: #ffffff;">
+            <h3><a href="/club/new/" class="creategrp-btn">
                     Criar um Novo Grupo </a></h3>
 
-            <h3><a href="{% url 'logout' %}" class="logout-btn">
+            <h3><a href="/logout/" class="logout-btn">
                     Sair (Logout)
                 </a></h3>
         </div>
